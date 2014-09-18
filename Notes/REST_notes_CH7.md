@@ -1,4 +1,4 @@
-Chapter 7 Notes
+<h1>Chapter 7 Notes</h1>
 
 HTML Hypermedia controls:
 	<link>
