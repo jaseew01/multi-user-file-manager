@@ -33,13 +33,13 @@ var traverse = function(pathname)
 	});
 };
 
-var writeToJsonFile = function(
+var writeToJsonFile = function()
 {
 		var json = JSON.stringify(
 		{
-			"Directory":dir
-			"files":filesList
-			"Sizes":fileSizes
+			Directory : dir,
+			files : filesList,
+			Sizes : fileSizes
 		});
 
 		fs.writeFile("filesInformation.json",json,function(err)
@@ -47,4 +47,4 @@ var writeToJsonFile = function(
 			if (err) throw err;
 			console.log("Successfully wrote to file");
 		});
-});
+};
