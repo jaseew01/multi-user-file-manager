@@ -1,0 +1,38 @@
+[
+    {
+        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Document1.txt",
+        "size": 98
+    },
+    {
+        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Document2.txt",
+        "size": 98
+    },
+    {
+        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Document3.txt",
+        "size": 118
+    },
+    {
+        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\filesInformation.json",
+        "size": 1846
+    },
+    {
+        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Node__fileSystems.js",
+        "size": 2060
+    },
+    {
+        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Folder 2\\Another_Document.txt",
+        "size": 137
+    },
+    {
+        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Folder 1\\SubFolder 2\\SubFolder2_Document1.txt",
+        "size": 118
+    },
+    {
+        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Folder 1\\SubFolder 1\\SubFolder_Document 1.txt",
+        "size": 108
+    },
+    {
+        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Folder 1\\SubFolder 1\\SubFolder_Document 2.txt",
+        "size": 108
+    }
+]
