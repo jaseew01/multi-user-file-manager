@@ -1,13 +1,16 @@
 var fs = require('fs');
-var path = require('path');
 var mime = require('mime');
 
+var dir = process.cwd();
 var numLines = 0;
 
 function countLines(content){
 	mime.lookup(content.split('\n')).forEach(function(line){
-		numLines += 1;
+		if (line.prototype.startsWith != '//' && line.prototype.startsWith != ' '){
+			numLines += 1;
+		}
 	});
+	console.Log(numLines);
 }
 
 function processFile(file){
@@ -18,7 +21,7 @@ function processFile(file){
 				traverse(file);
 			}else{
 				if (mime.lookup(file.split('/')[1] === '.js')){
-					fs.readFile(file,"utf8", function(err,data){
+						fs.readFile(file,"utf8", function(err,data){
 						countLines(data);
 					});
 				}
@@ -28,10 +31,10 @@ function processFile(file){
 
 function traverse(pathname){
 		fs.readdir(pathname, function(err, files){
-			//for each file in directory:
-			files.forEach(function(file){
+				files.forEach(function(file){
 				processFile(file);
-				//var currPath = path.join(pathname,file);
 			});
 		});
 	};
+
+processFile(dir);
