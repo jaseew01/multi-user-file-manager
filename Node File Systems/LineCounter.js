@@ -3,8 +3,9 @@ var path = require('path');
 
 var dir = process.cwd();
 var numLines = 0;
+var jsonObject = {};
 
-function countLines(content,acc){
+function countLines(content,acc,file){
 	content.split('\n').forEach(function(line){
 		if (line != "//" && line != " "){
 			acc += 1;
@@ -12,7 +13,8 @@ function countLines(content,acc){
 			console.log(line);
 		}
 	});
-	console.log(acc);
+	jsonObject = {name : file, lines : acc};
+	console.log(jsonObject);
 }
 
 function processFile(file){
@@ -25,7 +27,7 @@ function processFile(file){
 				if (file.split('.')[1] === 'js'){
 						fs.readFile(file,"utf8", function(err,data){
 						//console.log(file + ':');
-						countLines(data,numLines);
+						countLines(data,numLines,path.basename(file));
 					});
 				}
 			}
