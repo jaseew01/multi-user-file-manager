@@ -1,16 +1,18 @@
 var fs = require('fs');
-var mime = require('mime');
+var path = require('path');
 
 var dir = process.cwd();
 var numLines = 0;
 
-function countLines(content){
-	mime.lookup(content.split('\n')).forEach(function(line){
-		if (line.prototype.startsWith != '//' && line.prototype.startsWith != ' '){
-			numLines += 1;
+function countLines(content,acc){
+	content.split('\n').forEach(function(line){
+		if (line != "//" && line != " "){
+			acc += 1;
+		}else{
+			console.log(line);
 		}
 	});
-	console.Log(numLines);
+	console.log(acc);
 }
 
 function processFile(file){
@@ -20,9 +22,10 @@ function processFile(file){
     		if (stat && stat.isDirectory()){
 				traverse(file);
 			}else{
-				if (mime.lookup(file.split('/')[1] === '.js')){
+				if (file.split('.')[1] === 'js'){
 						fs.readFile(file,"utf8", function(err,data){
-						countLines(data);
+						//console.log(file + ':');
+						countLines(data,numLines);
 					});
 				}
 			}
@@ -32,7 +35,7 @@ function processFile(file){
 function traverse(pathname){
 		fs.readdir(pathname, function(err, files){
 				files.forEach(function(file){
-				processFile(file);
+					processFile(path.join(pathname,file));
 			});
 		});
 	};
