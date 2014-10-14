@@ -78,10 +78,10 @@ myTraverser.on("done", console.log);
 myTraverser.run();
 
 function writeToJsonFile(files){
-		var json = JSON.stringify(files, null, "    ");
+	var json = JSON.stringify(files, null, "    ");
 
-		fs.writeFile("filesInformation.json",json,function(err){
-			if (err) throw err;
-			console.log("Successfully wrote to file");
-		});
+	fs.writeFile("filesInformation.json",json,function(err){
+		if (err) throw err;
+		console.log("Successfully wrote to file");
+	});
 };
