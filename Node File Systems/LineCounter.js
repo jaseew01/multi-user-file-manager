@@ -19,6 +19,7 @@ FileTraversal.prototype.increment = function increment(){
 
 FileTraversal.prototype.addObject = function addObject(item){
 	this.jsonObjects.push(item);
+	console.log(item);
 };
 
 FileTraversal.prototype.decrement = function decrement(){
@@ -38,7 +39,7 @@ FileTraversal.prototype.run = function run(){
 	//append to json objects to array, add array to jsonObject.
 	function countLines(content,accumulator,file){
 		content.split('\n').forEach(function(line){
-			if (line != "//" && line != " "){
+			if (line != "[\t\s]+//\w+" && line != "[\s\t]+"){
 				accumulator += 1;
 			}else{
 				console.log(line);
