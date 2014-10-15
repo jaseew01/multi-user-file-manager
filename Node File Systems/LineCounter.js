@@ -19,7 +19,6 @@ FileTraversal.prototype.increment = function increment(){
 
 FileTraversal.prototype.addObject = function addObject(item){
 	this.jsonObjects.push(item);
-	console.log(item);
 };
 
 FileTraversal.prototype.decrement = function decrement(){
@@ -36,16 +35,22 @@ FileTraversal.prototype.done = function done(){
 FileTraversal.prototype.run = function run(){
 	var that = this;
 
-	//append to json objects to array, add array to jsonObject.
 	function countLines(content,accumulator,file){
+		that.increment();
+		var commented = false;
 		content.split('\n').forEach(function(line){
-			if (line != "[\t\s]+//\w+" && line != "[\s\t]+"){
+			if(line === '.*/\*.*'){
+				commented = true;
+			}if(line === '.**/'){
+				commented = false;
+			}if (line != ".*//.*" && line != "[\s\t]*" && commented != true){
 				accumulator += 1;
 			}else{
 				console.log(line);
 			}
 		});
 		that.addObject({name : file, lines : accumulator});
+		that.decrement();
 	}
 
 	function processFile(file){
