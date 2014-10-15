@@ -38,12 +38,18 @@ FileTraversal.prototype.run = function run(){
 	function countLines(content,accumulator,file){
 		that.increment();
 		var commented = false;
+		//var expression1 = new RegExp('.\*/.\*');
+		//var expression2 = new RegExp('.\*/');
+		var expression3 = new RegExp('.\*//.\*');
+		var expression4 = new RegExp('[\s\t]\*');
+		
 		content.split('\n').forEach(function(line){
-			if(line === '.*/\*.*'){
+			/*
+			if(expression1.test(line)){
 				commented = true;
-			}if(line === '.**/'){
+			}if(expression2.test(line)){
 				commented = false;
-			}if (line != ".*//.*" && line != "[\s\t]*" && commented != true){
+			}*/if (!expression3.test(line) || !expression4.test(line)/*&& commented != true*/){
 				accumulator += 1;
 			}else{
 				console.log(line);
