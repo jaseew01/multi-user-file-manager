@@ -1,0 +1,13 @@
+**Two-Step Design Procedure:**
+1. Choose a media type to use in your representations.
+2. Write a profile that covers everything else.
+
+**Seven-Step Design Procedure:**
+1. List all the pieces of information a client might want to get out of your API or put
+into your API.  These are also referred to as semantic descriptors.
+2. Draw a state diagram for the API.  Each box is a representation, while the arrows are state transitions which get triggered by HTTP requests.
+3. Try to adjust your semantic descriptors and link relations with others from existing profiles so as to find something that works.
+4. Choose a media type compatible with your protocol and application semantics.
+5. Write a profile that documents your application semantics.
+6. Develop an HTTP server that implements the state diagram from step 3.
+7. Publish your billboard URL.
