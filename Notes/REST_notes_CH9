@@ -11,3 +11,14 @@ into your API.  These are also referred to as semantic descriptors.
 5. Write a profile that documents your application semantics.
 6. Develop an HTTP server that implements the state diagram from step 3.
 7. Publish your billboard URL.
+
+> Think of the HTTP back-and-forth between client and server. A resource receives a
+> GET request and serves a representation with a certain media type. The representation
+> contains hypermedia controls, which describe possible state transitions. A client activates
+> a state transition by sending an HTTP request to another resource, which implements
+> the state change and sends another representation. The client never directly interacts
+> with a resource.
+
+* Each URL should in a way identify the resource at its location.
+* Don't choose names that you like, choose names that will make sense to people using your API.
+* Keep the amount of human readable documents associating your API to a minimum.  This will leave less room for human interpretation.
