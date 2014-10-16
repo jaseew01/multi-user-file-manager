@@ -10,6 +10,7 @@ function FileTraversal(pathname){
 	this.pathname = pathname;
 	this.jsonObjects = [];
 	this.temp = 0;
+	this.directorySize = 0;
 };
 
 util.inherits(FileTraversal,EventEmitter);
@@ -35,32 +36,24 @@ FileTraversal.prototype.done = function done(){
 FileTraversal.prototype.run = function run(){
 	var that = this;
 
+//maybe use event emmiter instead of accumulator
 	function countLines(content,accumulator,file){
-		that.increment();
 		var commented = false;
-		//var expression1 = new RegExp('.\*/.\*');
-		//var expression2 = new RegExp('.\*/');
-		var expression3 = new RegExp('.\*//.\*');
-		var expression4 = new RegExp('[\s\t]\*');
-		
+		var expression = new RegExp('^\\s*(//|$)');
+
 		content.split('\n').forEach(function(line){
-			/*
-			if(expression1.test(line)){
-				commented = true;
-			}if(expression2.test(line)){
-				commented = false;
-			}*/if (!expression3.test(line) || !expression4.test(line)/*&& commented != true*/){
+			if (!expression.test(line)){
 				accumulator += 1;
 			}else{
-				console.log(line);
+				//console.log(line);
 			}
 		});
 		that.addObject({name : file, lines : accumulator});
-		that.decrement();
 	}
 
 	function processFile(file){
 		that.increment();
+		var count = 0;
 		fs.stat(file, function(err, stat){
 			if (err) throw err;
 
@@ -68,21 +61,26 @@ FileTraversal.prototype.run = function run(){
 				traverse(file);
 			}else{
 				if (file.split('.')[1] === 'js'){
-						fs.readFile(file,"utf8", function(err,data){
+					that.increment();
+					fs.readFile(file,"utf8", function(err,data){
 						//console.log(file + ':');
-						countLines(data,numLines,path.basename(file));
+						count = countLines(data,numLines,path.basename(file));
+						that.decrement();
 					});
 				}
 			}
+			that.directorySize += stat["size"];
 			that.decrement();
 		});
+		return count;
 	}
 
 	function traverse(pathname){
 		that.increment();
+		var total = 0;
 		fs.readdir(pathname, function(err, files){
 			files.forEach(function(file){
-				processFile(path.join(pathname,file));
+				total += processFile(path.join(pathname,file));
 			});
 			that.decrement();
 		});

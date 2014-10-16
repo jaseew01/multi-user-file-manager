@@ -1,0 +1,32 @@
+**Semantic Descriptors**
+============================
+* file(s)
+* file type
+* file size
+* number of files
+* cummulative file size
+* date added
+* file name
+* all file names
+
+**State Diagram**
+============================
+----------------				----------------------
+|   **file**   |				|	 **File List**   |
+|    (type)    |	  Item		|       (names)      |
+|    (size)    | <------------- |     (total size)   |
+|	 (date)    |                |       (number)     |
+|	 (name)    |                ----------------------
+----------------                           ^
+        |                                  |
+        ------------------------------------
+                    collection
+
+**Reconcile Names**
+============================
+
+**Media Type**
+============================
+
+**Profile**
+============================

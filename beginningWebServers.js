@@ -7,9 +7,10 @@ var currLogFile = process.argv[3];
 app.use('/', function (req, res, next) {
 	//handle request information
 	var reqInfo = [];
-	req.params.forEach(function (item){
-		reqInfo.push(item);
-	});
+	console.log(req.route);
+	// req.params.forEach(function (item){
+	// 	reqInfo.push(item);
+	// });
 
   	res.status(200).send('ok');
   	next();
