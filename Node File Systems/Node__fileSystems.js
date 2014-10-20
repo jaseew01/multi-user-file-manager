@@ -45,8 +45,8 @@ FileTraversal.prototype.run = function run(){
     		if (stat && stat.isDirectory()){
 				traverse(file);
 			}else{
-				that.filesList.push({name: file, size: stat["size"]});
-				that.emit("fileFound", {name: file, size: stat["size"]});
+				that.filesList.push({name: path.basename(file), size: stat["size"]});
+				that.emit("fileFound", {name: path.basename(file), size: stat["size"]});
 				fs.readFile(file,"utf8", function(err,data){
 					//console.log(data);
 				});
@@ -58,6 +58,7 @@ FileTraversal.prototype.run = function run(){
 	function traverse(pathname){
 		//fs.readdir - returns list of files in directory:
 		that.increment();
+		
 		fs.readdir(pathname, function(err, files){
 			//for each file in directory:
 			files.forEach(function(file){

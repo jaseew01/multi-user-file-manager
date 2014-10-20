@@ -1,46 +1,50 @@
 [
     {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Document1.txt",
+        "name": "Design_Procedure",
+        "size": 877
+    },
+    {
+        "name": "Document1.txt",
         "size": 98
     },
     {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Document2.txt",
+        "name": "Document2.txt",
         "size": 98
     },
     {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\LineCounter.js",
-        "size": 2080
-    },
-    {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\filesInformation.json",
-        "size": 1846
-    },
-    {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Node__fileSystems.js",
-        "size": 2055
-    },
-    {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Document3.txt",
+        "name": "Document3.txt",
         "size": 118
     },
     {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\npm-debug.log",
+        "name": "filesInformation.json",
+        "size": 2422
+    },
+    {
+        "name": "LineCounter.js",
+        "size": 2497
+    },
+    {
+        "name": "Node__fileSystems.js",
+        "size": 2089
+    },
+    {
+        "name": "npm-debug.log",
         "size": 1289
     },
     {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Folder 2\\Another_Document.txt",
+        "name": "Another_Document.txt",
         "size": 137
     },
     {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Folder 1\\SubFolder 1\\SubFolder_Document 1.txt",
+        "name": "SubFolder_Document 1.txt",
         "size": 108
     },
     {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Folder 1\\SubFolder 1\\SubFolder_Document 2.txt",
+        "name": "SubFolder_Document 2.txt",
         "size": 108
     },
     {
-        "name": "C:\\Users\\John Seewer\\Documents\\Hanover College Senior Year\\Directed Study\\multi-user-file-manager\\Node File Systems\\Folder 1\\SubFolder 2\\SubFolder2_Document1.txt",
+        "name": "SubFolder2_Document1.txt",
         "size": 118
     }
 ]

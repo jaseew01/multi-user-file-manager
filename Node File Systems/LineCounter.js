@@ -9,6 +9,7 @@ var numLines = 0;
 function FileTraversal(pathname){
 	this.pathname = pathname;
 	this.jsonObjects = [];
+	this.directoriesList = [];
 	this.temp = 0;
 	this.directorySize = 0;
 };
@@ -30,7 +31,7 @@ FileTraversal.prototype.decrement = function decrement(){
 }
 
 FileTraversal.prototype.done = function done(){
-	this.emit("done",this.jsonObjects);
+	this.emit("done",this.jsonObjects, this.directoriesList);
 }
 
 FileTraversal.prototype.run = function run(){
@@ -69,7 +70,6 @@ FileTraversal.prototype.run = function run(){
 					});
 				}
 			}
-			that.directorySize += stat["size"];
 			that.decrement();
 		});
 		return count;
@@ -77,13 +77,14 @@ FileTraversal.prototype.run = function run(){
 
 	function traverse(pathname){
 		that.increment();
-		var total = 0;
+
 		fs.readdir(pathname, function(err, files){
 			files.forEach(function(file){
-				total += processFile(path.join(pathname,file));
+				that.directorySize += processFile(path.join(pathname,file));
 			});
 			that.decrement();
 		});
+		//that.directoriesList.push({name : path.basename(pathname), size : that.directorySize});
 	};
 	processFile(that.pathname);
 }
@@ -92,7 +93,9 @@ var myTraverser = new FileTraversal(dir);
 myTraverser.on("done",printJsonObject);
 myTraverser.run();
 
-function printJsonObject (objectArray){
+function printJsonObject (objectArray, directoryArray){
 	var json = JSON.stringify(objectArray, null, "    ");
+	var json2 = JSON.stringify(directoryArray, null, "    ");
 	process.stdout.write(json);
+	//process.stdout.write(json2);
 }
