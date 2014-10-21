@@ -14,7 +14,6 @@ app.use('/', function (req, res, next) {
 	// });
 	infoToLog.push({method : req.get('method'), url : req.get('host')+req.originalUrl});
   	res.status(200).send('ok');
-  	res.end();
   	next();
 });
 
@@ -22,7 +21,6 @@ app.use('/readLogFile', function (req, res, next){
 	fs.readFile(currLogFile, function (err, data){
 		if (err)throw err;
 		res.status(200).send(data);
-		res.end();
 	});
 	next();
 });
