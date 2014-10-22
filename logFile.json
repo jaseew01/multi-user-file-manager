@@ -1,25 +1,34 @@
 [
     {
+        "method": "GET",
         "url": "localhost:8000/"
     },
     {
-        "url": "localhost:8000/favicon.ico"
-    },
-    {
-        "url": "localhost:8000/favicon.ico"
-    }
-][
-    {
+        "method": "GET",
         "url": "localhost:8000/"
     }
 ][
     {
+        "method": "GET",
+        "url": "localhost:8000/"
+    }
+][
+    {
+        "method": "GET",
+        "url": "localhost:8000/"
+    }
+][
+    {
+        "method": "GET",
+        "url": "localhost:8000/"
+    }
+][
+    {
+        "method": "GET",
         "url": "localhost:8000/"
     },
     {
-        "url": "localhost:8000/favicon.ico"
-    },
-    {
-        "url": "localhost:8000/favicon.ico"
+        "method": "GET",
+        "url": "localhost:8000/"
     }
 ]
