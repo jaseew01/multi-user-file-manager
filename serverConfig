@@ -1,0 +1,6 @@
+{
+	"fileSize" : "1000000" ,
+	"portNum" : "8000",
+	"archiveFreq" : "10800000",
+	"loggingFile" : "logFile.json"
+}
