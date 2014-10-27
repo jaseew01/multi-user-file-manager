@@ -1,5 +1,7 @@
 **Semantic Descriptors**
 ============================
+Protocol Semantics: which HTTP requests a client will be making
+Application Semantics: which bits of data will be sent back and forth
 * file(s)
 * file type
 * file size
@@ -20,10 +22,13 @@
 ----------------                           ^
         |                                  |
         ------------------------------------
-                    collection
+                    Collection
 
 **Reconcile Names**
 ============================
+Magic Strings: semantic descriptors and link relations
+Item --> [RFC6573]
+Collection --> [RFC6573]
 
 **Media Type**
 ============================
