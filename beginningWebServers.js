@@ -48,9 +48,12 @@ function writeToLogFile(){
 		var data = JSON.stringify(infoToLog, null, "    ");
 
 		fs.appendFile(currLogFile,data,function(err){
-			if (err) throw err;
-			infoToLog = [];
-			console.log("Successfully wrote to file");
+			if (err){
+				throw err;
+			}else{
+				infoToLog = [];
+				console.log("Successfully wrote to file");
+			}
 		});
 	}
 }
