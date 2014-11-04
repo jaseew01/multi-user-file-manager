@@ -13,9 +13,9 @@ Application Semantics: which bits of data will be sent back and forth
 
 **State Diagram**
 ============================
-----------------				----------------------
-|   **file**   |				|	 **File List**   |
-|    (type)    |	  Item		|       (names)      | <------------
+----------------                ----------------------
+|   **file**   |                |    **File List**   |
+|    (type)    |      Item      |       (names)      | <------------
 |    (size)    | <------------- |     (total size)   |
 |	 (date)    |                |       (number)     |
 |	 (name)    |                ----------------------
@@ -36,3 +36,5 @@ Collection+JSON
 
 **Profile**
 ============================
+-Will explain the application semantics-
+-Use ALPS documentation format to define semantics-
