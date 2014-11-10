@@ -39,61 +39,61 @@ Collection+JSON
 -Will explain the application semantics-
 -Use ALPS documentation format to define semantics-
 
-**What the file list will look like (initial GET)**
-{
-	files:
-	[
-		name:
-		{
-			date:"September 9, 2014",
-			type:"jpeg",
-			size:"12 MB",
-			link:""
-		},
-		name:
-		{
-			date:"September 8, 2014",
-			type:"txt",
-			size:"10 KB",
-			link:""
-		}
-	]
-}
+**What the file list will look like (initial GET)**<br />
+{<br />
+	files:<br />
+	[<br />
+		name:<br />
+		{<br />
+			date:"September 9, 2014",<br />
+			type:"jpeg",<br />
+			size:"12 MB",<br />
+			link:""<br />
+		},<br />
+		name:<br />
+		{<br />
+			date:"September 8, 2014",<br />
+			type:"txt",<br />
+			size:"10 KB",<br />
+			link:""<br />
+		}<br />
+	]<br />
+}<br />
 
-**What an individual file will look like (GET response content for individual file)**
-{
-	name:
-	{
-		date:"November 1, 2014",
-		type:"png",
-		size:"7 MB",
-		link:""
-	}
+**What an individual file will look like (GET response content for individual file)**<br />
+{<br />
+	name:<br />
+	{<br />
+		date:"November 1, 2014",<br />
+		type:"png",<br />
+		size:"7 MB",<br />
+		link:""<br />
+	}<br />
 }
 
 **HTTP Requests**
 GET
-	-Initial
-		-Will return A list in the form of Collection+JSON that will contain each file.  Each object in that list will contain the following attributes:
-			-name
-			-size
-			-date last edited/created
-			-file type
-	-Individual File
-		-Will return the file object as shown in the list.  You will get back an object with the file name, date, size, and type.
+* Initial
+	* Will return A list in the form of Collection+JSON that will contain each file.  Each object in that list will contain the following attributes:
+		* name
+		* size
+		* date last edited/created
+		* file type
+* Individual File
+	* Will return the file object as shown in the list.  You will get back an object with the file name, date, size, and type.
 
 HEAD
-	-Will essentially be the same as the GET request, just without the content.
+* Will essentially be the same as the GET request, just without the content.
 
 POST
-	-Will be used to update an existing resource (file) on the server.  Some of the possible responses will be: 200(OK), 204(No Content).
+* Will be used to update an existing resource (file) on the server.  Some of the possible responses will be: 200(OK), 204(No Content).
 
 PUT
-	-Will be used to upload a new file to ther server, or replace an existing file with this new one.  Possible responses will be: 201(Created), 200(OK), 204(No Content), maybe 301(Moved Permanently) or 501(Not Implemented).
+* Will be used to upload a new file to ther server, or replace an existing file with this new one.  Possible responses will be: 201(Created), 200(OK), 204(No Content), maybe 301(Moved Permanently) or 501(Not Implemented).
 
 DELETE
-	-Individual File
-		-Will allow you to delete the specified file.  Responses will be 200(OK), 202(Accepted), 204(No Content), or 501(Not Implemented).
+* Individual File
+	* Will allow you to delete the specified file.  Responses will be 200(OK), 202(Accepted), 204(No Content), or 501(Not Implemented).
 
 
 
