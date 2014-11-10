@@ -65,7 +65,7 @@ FileTraversal.prototype.run = function run(){
 					that.increment();
 					fs.readFile(file,"utf8", function(err,data){
 						//console.log(file + ':');
-						count = countLines(data,numLines,path.basename(file));
+						countLines(data,numLines,path.basename(file));
 						that.decrement();
 					});
 				}
