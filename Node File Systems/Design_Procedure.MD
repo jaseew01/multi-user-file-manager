@@ -1,4 +1,4 @@
-**Semantic Descriptors**
+Semantic Descriptors
 ============================
 Protocol Semantics: which HTTP requests a client will be making
 Application Semantics: which bits of data will be sent back and forth
@@ -11,8 +11,9 @@ Application Semantics: which bits of data will be sent back and forth
 * file name
 * all file names
 
-**State Diagram**
+State Diagram
 ============================
+```
 ----------------                ----------------------
 |   **file**   |                |    **File List**   |
 |    (type)    |      Item      |       (names)      | <------------
@@ -23,55 +24,60 @@ Application Semantics: which bits of data will be sent back and forth
         |                                  |
         ------------------------------------
                     Collection
+```
 
-**Reconcile Names**
+Reconcile Names
 ============================
 Magic Strings: semantic descriptors and link relations
 Item --> [RFC6573]
 Collection --> [RFC6573]
 
-**Media Type**
+Media Type
 ============================
 Collection+JSON
 
-**Profile**
+Profile
 ============================
 -Will explain the application semantics-
 -Use ALPS documentation format to define semantics-
 
-**What the file list will look like (initial GET)**<br />
-{<br />
-    files:<br />
-    [<br />
-        name:<br />
-        {<br />
-            date:"September 9, 2014",<br />
-            type:"jpeg",<br />
-            size:"12 MB",<br />
-            link:""<br />
-		},<br />
-        name:<br />
-        {<br />
-            date:"September 8, 2014",<br />
-            type:"txt",<br />
-            size:"10 KB",<br />
-            link:""<br />
-        }<br />
-    ]<br />
-}<br />
-
-**What an individual file will look like (GET response content for individual file)**<br />
-{<br />
-    name:<br />
-    {<br />
-        date:"November 1, 2014",<br />
-        type:"png",<br />
-        size:"7 MB",<br />
-        link:""<br />
-    }<br />
+**What the file list will look like (initial GET)**
+```
+{
+    files:
+    [
+        {
+            name:""
+            date:"September 9, 2014",
+            type:"jpeg",
+            size:"12 MB",
+            link:""
+		},
+        {
+            name:""
+            date:"September 8, 2014",
+            type:"txt",
+            size:"10 KB",
+            link:""
+        }
+    ]
 }
+```
 
-**HTTP Requests**<br />
+**What an individual file will look like (GET response content for individual file)**
+```
+{
+    name:
+    {
+        date:"November 1, 2014",
+        type:"png",
+        size:"7 MB",
+        link:""
+    }
+}
+```
+
+**HTTP Requests**
 GET
 * Initial
 	* Will return A list in the form of Collection+JSON that will contain each file.  Each object in that list will contain the following attributes:
@@ -103,14 +109,15 @@ DELETE
 	* The Uniform Interfaced (pg. 245)
 		* read back over safe vs. unsafe, idempotent vs. nonidempotent
 
-searching - allow a way to search for files?  Specify how it will work.<br />
+searching - allow a way to search for files?  Specify how it will work.
 
 **Links/URLs - what format your urls will be in (what will get placed into the url)**
 * Web services book will talk a lot about this (Look at Chs 4 and 5).
 	* Look for naming conventions.
 
-Server routes - how express will represent each http request.  How will the router direct the request to the correct method.<br />
+Server routes - how express will represent each http request.  How will the router direct the request to the correct method.
 
+```
 <!-- ALPS Profile -->
 <alps>
 	<descriptor id="file" type="semantic" href="">
@@ -126,3 +133,4 @@ Server routes - how express will represent each http request.  How will the rout
 		<descriptor id="number" type="semantic" href=""/>
 	</descriptor>
 </alps>
+```
