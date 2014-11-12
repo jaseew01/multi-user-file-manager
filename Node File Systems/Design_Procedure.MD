@@ -113,14 +113,25 @@ HEAD
 * Will essentially be the same as the GET request, just without the content.
 
 POST
-* Will be used to update an existing resource (file) on the server.  Some of the possible responses will be: 200(OK), 204(No Content).
+* Will be used to update an existing resource (file) on the server.  Some of the possible responses will be:
+    * 200(OK)
+    * 204(No Content)
 
 PUT
-* Will be used to upload a new file to ther server, or replace an existing file with this new one.  Possible responses will be: 201(Created), 200(OK), 204(No Content), maybe 301(Moved Permanently) or 501(Not Implemented).
+* Will be used to upload a new file to ther server, or replace an existing file with this new one.  Possible responses will be:
+    * 201(Created)
+    * 200(OK)
+    * 204(No Content)
+    * 301(Moved Permanently)
+    * 501(Not Implemented)
 
 DELETE
 * Individual File
-	* Will allow you to delete the specified file.  Responses will be 200(OK), 202(Accepted), 204(No Content), or 501(Not Implemented).
+	* Will allow you to delete the specified file.  Responses will be:
+        * 200(OK)
+        * 202(Accepted)
+        * 204(No Content)
+        * 501(Not Implemented)
 
 
 
