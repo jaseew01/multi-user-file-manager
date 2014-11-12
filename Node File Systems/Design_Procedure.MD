@@ -43,24 +43,45 @@ Profile
 
 **What the file list will look like (initial GET)**
 ```
-{
-    files:
-    [
-        {
-            name:""
-            date:"September 9, 2014",
-            type:"jpeg",
-            size:"12 MB",
-            link:""
-		},
-        {
-            name:""
-            date:"September 8, 2014",
-            type:"txt",
-            size:"10 KB",
-            link:""
+{ "collection" :
+    {
+        "version" : "1.0",
+        "href" : "",
+        "links" : [],
+
+        "items" : [
+            {
+                "href" : " ",
+                "data" : [
+                    { "name" : "filename", "value" : "file1" },
+                    { "name" : "date", "value" : "September 9, 2014" },
+                    { "name" : "filetype", "value" : "jpeg" },
+                    { "name" : "size", "value" : "12 MB" },
+                    { "name" : "link", "value" : " " }
+                ]
+    		},
+            {
+                "href" : " ",
+                "data" : [
+                    { "name" : "filename", "value" : "file2" },
+                    { "name" : "date", "value" : "September 8, 2014" },
+                    { "name" : "filetype", "value" : "txt" },
+                    { "name" : "size", "value" : "10 KB" },
+                    { "name" : "link", "value" : " " }
+                ]
+            }
+        ],
+
+        "template" : {
+            "data" : [
+                { "name" : "filename", "value" : "" },
+                { "name" : "date", "value" : "" },
+                { "name" : "filetype", "value" : "" },
+                { "name" : "size", "value" : "" },
+                { "name" : "link", "value" : "" }
+            ]
         }
-    ]
+    }
 }
 ```
 
@@ -86,7 +107,7 @@ GET
 		* date last edited/created
 		* file type
 * Individual File
-	* Will return the file object as shown in the list.  You will get back an object with the file name, date, size, and type.
+	* Will return the file object as shown in the list in the form of JSON.  You will get back an object with the file name, date, size, and type.
 
 HEAD
 * Will essentially be the same as the GET request, just without the content.
