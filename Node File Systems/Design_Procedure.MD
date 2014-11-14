@@ -54,6 +54,7 @@ Profile
                 "href" : " ",
                 "data" : [
                     { "name" : "filename", "value" : "file1" },
+                    { "name" : "fileid", "value", : "12345" },
                     { "name" : "date", "value" : "September 9, 2014" },
                     { "name" : "filetype", "value" : "jpeg" },
                     { "name" : "size", "value" : "12 MB" },
@@ -64,6 +65,7 @@ Profile
                 "href" : " ",
                 "data" : [
                     { "name" : "filename", "value" : "file2" },
+                    { "name" : "fileid", "value", : "12345" },
                     { "name" : "date", "value" : "September 8, 2014" },
                     { "name" : "filetype", "value" : "txt" },
                     { "name" : "size", "value" : "10 KB" },
@@ -148,6 +150,12 @@ searching - allow a way to search for files?  Specify how it will work.
 	* Look for naming conventions.
 
 Server routes - how express will represent each http request.  How will the router direct the request to the correct method.
+
+**Database Info**
+* Tables:
+    * files
+        * id
+        * folder
 
 ```
 <!-- ALPS Profile -->
