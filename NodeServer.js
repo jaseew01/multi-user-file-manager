@@ -2,6 +2,7 @@ var fs = require('fs');
 var express = require('express');
 var sql = require('mssql'); 
 var app = express();
+var busboy = require('connect-busboy');
 
 var currLogFile = 'logFile.json';
 var infoToLog = [];
@@ -17,18 +18,25 @@ var config = {
 //	if (err) throw err;
 //});
 
+//Will simply return the collection+JSON file
+//Return correct response
 app.get('/', function (req, res, next) {
-	console.log(req.route);
-	res.status(200).send('ok');
-	/*
 	if(req.originalUrl === '/'){
-		res.writeHead(200, { 'Content-Type': 'application/vnd.collection+json' });
-		res.json({});
-  		res.send('ok');
+		infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
+		res.setHeader('Content-Type', 'application/vnd.collection+json');
+
+		fs.readFile('fileList.json', function (err, data){
+			if (err){
+				res.status(404);
+			}else{
+				res.status(200);
+				res.send(data);
+			}
+		});
+
   	}else{
   		next();
   	}
-  	*/
 });
 
 //'/:fileid'
@@ -36,8 +44,11 @@ app.get('/', function (req, res, next) {
 //fileid is a variable placeholder for whatever value gets put into the url
 //Use regex here?
 app.get('/:fileid', function (req, res, next) {
+	infoToLog.push({});
 	var fileid = req.params.fileid;
-	var obj = JSON.parse(fs.readFile('fileList.json', 'utf8'));
+	var obj = JSON.parse(fs.readFileSync('fileList.json'));
+
+	//findfile(filename);
 
   	res.status(200).send('ok');
   	next();
@@ -45,6 +56,9 @@ app.get('/:fileid', function (req, res, next) {
 
 app.post('/', function (req,res){
 	console.log(req);
+
+	infoToLog.push({});
+	var file = req.body;
 	//var obj = {object you create from file information};
 	//^--Remember to use format shown in design procedure
 	//updateCollection(obj);
@@ -52,12 +66,14 @@ app.post('/', function (req,res){
 });
 /*
 app.delete('/', function (req,res,next){
+	infoToLog.push({});
 	var item = "";
 	//removeItem(item)
 	res.status(200).send('ok');
 });
 */
 app.head('/', function (req,res,next){
+	infoToLog.push({});
 	res.status(200).send('ok');
 	next();
 });
@@ -91,6 +107,22 @@ function writeToLogFile(){
 			}
 		});
 	}
+}
+
+//will append a unique file id to the end of the file name
+//function generates a random integer and then checks that it doesn't already exist
+function nameFile(filename){
+	//var randNum Math.floor(Math.random() * (high - low) + low);
+
+	//if randNum exists: nameFile();
+
+	return " ";
+}
+
+//Search through database for which folder the file is stored
+//Return the content of the file as a JSON object
+function findFile(filename){
+	//
 }
 
 app.listen('8080');
