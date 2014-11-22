@@ -54,7 +54,7 @@ app.get('/:fileid', function (req, res, next) {
   	next();
 });
 
-app.post('/', function (req,res){
+app.post('/file-upload', function (req,res){
 	console.log(req);
 
 	infoToLog.push({});
@@ -64,6 +64,7 @@ app.post('/', function (req,res){
 	//updateCollection(obj);
 	res.status(200).send('ok');
 });
+
 /*
 app.delete('/', function (req,res,next){
 	infoToLog.push({});
@@ -72,6 +73,7 @@ app.delete('/', function (req,res,next){
 	res.status(200).send('ok');
 });
 */
+
 app.head('/', function (req,res,next){
 	infoToLog.push({});
 	res.status(200).send('ok');
@@ -83,15 +85,30 @@ function updateCollection(data){
 	var json = JSON.stringify(data, null, "    ");
 	var obj = JSON.parse(fs.readFileSync('fileList.json'));
 
-	obj.collection.items.push(json)
+	obj.collection.items.push(json);
 
-	fs.appendFile('fileList.json',JSON.stringify(object,null, "    "),function(err){
+	fs.appendFile('fileList.json',JSON.stringify(obj,null, "    "),function(err){
 		if (err) throw err;
 	});
 }
 
-function removeItem(item){
-	//
+//will be the ID of the item that you want to remove
+function removeItem(itemId){
+	//Delete item from server
+	//Delete item from database
+	var obj = JSON.parse(fs.readFileSync('fileList.json'));
+	items = obj.collection.items;
+
+	for(i=0;i<items.length;i++){
+		if(items[i].fileid == itemId){
+			delete items[i];
+		}
+	};
+	obj.items = items;
+
+	fs.appendFile('fileList.json',JSON.stringify(obj,null, "    "),function(err){
+		if (err) throw err;
+	});
 }
 
 function writeToLogFile(){
@@ -109,7 +126,7 @@ function writeToLogFile(){
 	}
 }
 
-//will append a unique file id to the end of the file name
+//will append a unique 4-digit file id to the end of the file name
 //function generates a random integer and then checks that it doesn't already exist
 function nameFile(filename){
 	//var randNum Math.floor(Math.random() * (high - low) + low);
