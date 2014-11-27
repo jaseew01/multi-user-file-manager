@@ -3,20 +3,66 @@ var express = require('express');
 var sql = require('mssql'); 
 var app = express();
 var busboy = require('connect-busboy');
+var random = require('node-random');
 
 var currLogFile = 'logFile.json';
 var infoToLog = [];
 
-var config = {
-    user: '...',
-    password: '...',
-    server: 'localhost',
-    database: '...',
+function connectToDB(){
+	var config = {
+	    user: '',
+	    password: '',
+	    server: '127.0.0.1',
+	    database: 'fileCollection',
+	};
+
+	var connection = new sql.Connection(config, function(err) {
+		if (err) throw err;
+	});
+
+	return connection;
 }
 
-//var connection = new sql.Connection(config, function(err) {
-//	if (err) throw err;
-//});
+function generateJSONTemplate(){
+	var template = '"template" : {\
+            "data" : [\
+                { "name" : "filename", "value" : "" },\
+                { "name" : "date", "value" : "" },\
+                { "name" : "filetype", "value" : "" },\
+                { "name" : "size", "value" : "" },\
+                { "name" : "link", "value" : "" }\
+            ]\
+        }';
+    return template;
+}
+
+function generateJSON(data){
+	var json = '{ "collection" :\
+    {\
+        "version" : "1.0",\
+        "href" : "",\
+        "links" : [],\
+        "items" : [';
+
+	data.forEach(function(record){
+		console.log(recordset[0]);
+	});
+
+	json += "]," + generateJSONTemplate() + "}}";
+	return JSON.stringify(json, null, "    ");
+}
+
+app.get('/index.html', function (req, res, next){
+	res.setHeader('Content-Type', 'text/html');
+	fs.readFile('testPostAttach.html', function (err, data){
+		if (err){
+			res.status(404);
+		}else{
+			res.status(200);
+			res.send(data);
+		}
+	});
+});
 
 //Will simply return the collection+JSON file
 //Return correct response
@@ -25,15 +71,16 @@ app.get('/', function (req, res, next) {
 		infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
 		res.setHeader('Content-Type', 'application/vnd.collection+json');
 
-		fs.readFile('fileList.json', function (err, data){
-			if (err){
-				res.status(404);
-			}else{
-				res.status(200);
-				res.send(data);
+		var connection = connectToDB();
+		var request = connection.request();
+		request.query('select *', function(err, recordset) {
+        	if (err) throw err;
+        	else{
+        		var data = generateJSON(recordset);
+				res.status(200).send(data);
 			}
 		});
-
+		connection.close();
   	}else{
   		next();
   	}
@@ -87,7 +134,7 @@ function updateCollection(data){
 
 	obj.collection.items.push(json);
 
-	fs.appendFile('fileList.json',JSON.stringify(obj,null, "    "),function(err){
+	fs.writeFile('fileList.json',JSON.stringify(obj,null, "    "),function(err){
 		if (err) throw err;
 	});
 }
@@ -101,12 +148,11 @@ function removeItem(itemId){
 
 	for(i=0;i<items.length;i++){
 		if(items[i].fileid == itemId){
-			delete items[i];
+			delete obj.items[i];
 		}
 	};
-	obj.items = items;
 
-	fs.appendFile('fileList.json',JSON.stringify(obj,null, "    "),function(err){
+	fs.writeFile('fileList.json',JSON.stringify(obj,null, "    "),function(err){
 		if (err) throw err;
 	});
 }
@@ -128,12 +174,19 @@ function writeToLogFile(){
 
 //will append a unique 4-digit file id to the end of the file name
 //function generates a random integer and then checks that it doesn't already exist
+//returns new filename
 function nameFile(filename){
-	//var randNum Math.floor(Math.random() * (high - low) + low);
-
-	//if randNum exists: nameFile();
-
-	return " ";
+	random.numbers({
+		"number": 1,
+		"minimum": 1000,
+		"maximum": 9999
+	}, function(error, data){
+		if (error) throw error;
+		//if randNum exists: 
+		//return filename+nameFile(filename);
+		//else{...}
+		return filename+data[0].toString();
+	});
 }
 
 //Search through database for which folder the file is stored
