@@ -2,7 +2,7 @@ var fs = require('fs');
 var express = require('express');
 var sql = require('mssql'); 
 var app = express();
-var busboy = require('connect-busboy');
+//var busboy = require('connect-busboy');
 var random = require('node-random');
 
 var currLogFile = 'logFile.json';
@@ -10,13 +10,14 @@ var infoToLog = [];
 
 function connectToDB(){
 	var config = {
-	    user: '',
-	    password: '',
-	    server: '127.0.0.1',
-	    database: 'fileCollection',
+	    user: 'jaseew93/John Seewer',
+	    password: '0047JaS1193',
+	    server: 'JASEEW93\\SQLEXPRESS',
+	    database: 'fileCollection'
 	};
 
 	var connection = new sql.Connection(config, function(err) {
+		console.log(err);
 		if (err) throw err;
 	});
 
@@ -74,6 +75,7 @@ app.get('/', function (req, res, next) {
 		var connection = connectToDB();
 		var request = connection.request();
 		request.query('select *', function(err, recordset) {
+			console.log(err);
         	if (err) throw err;
         	else{
         		var data = generateJSON(recordset);
@@ -172,7 +174,7 @@ function writeToLogFile(){
 	}
 }
 
-//will append a unique 4-digit file id to the end of the file name
+//will append a unique 4-digit id to the end of the file name
 //function generates a random integer and then checks that it doesn't already exist
 //returns new filename
 function nameFile(filename){
@@ -187,12 +189,6 @@ function nameFile(filename){
 		//else{...}
 		return filename+data[0].toString();
 	});
-}
-
-//Search through database for which folder the file is stored
-//Return the content of the file as a JSON object
-function findFile(filename){
-	//
 }
 
 app.listen('8080');

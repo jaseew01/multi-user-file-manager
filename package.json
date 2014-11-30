@@ -2,6 +2,9 @@
   "name":"Multi-User-File-Manager",
   "version":"1.0.0",
   "dependencies":{
-  	"express":"*"
+  	"express":"*",
+  	"mssql":"*",
+  	"node-random":"*",
+  	"fs":"*"
   }
 }
