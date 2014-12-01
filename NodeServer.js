@@ -12,7 +12,7 @@ function connectToDB(){
 	var config = {
 	    user: 'jaseew93/John Seewer',
 	    password: '0047JaS1193',
-	    server: 'JASEEW93\\SQLEXPRESS',
+	    server: '127.0.0.1',
 	    database: 'fileCollection'
 	};
 
