@@ -92,22 +92,27 @@ app.get('/', function (req, res, next) {
 app.get('/:fileid', function (req, res, next) {
 	infoToLog.push({});
 	var fileid = req.params.fileid;
-	var obj = JSON.parse(fs.readFileSync('fileList.json'));
+	res.setHeader('Content-Type','application/json');
 
-	//Connect to database and query for file with id: fileid
+	database.get("SELECT * FROM collection WHERE Field1="+fileid,function(err, row){
+		if(err) throw err;
+		var data = row;
+		console.log(data);
+  		res.status(200).send(data);
+	});
 
-  	res.status(200).send('ok');
   	next();
 });
 
 app.post('/file-upload', function (req,res){
 	console.log(req.params);
-
 	infoToLog.push({});
+
 	var file = req.body;
-	//var obj = {object you create from file information};
-	//^--Remember to use format shown in design procedure
-	//updateCollection(obj);
+
+	var sqlCommand = "INSERT INTO collection (Field1) Values (22)";
+	dbExec(sqlCommand);
+
 	res.status(200).send('ok');
 });
 
@@ -115,7 +120,8 @@ app.post('/file-upload', function (req,res){
 app.delete('/', function (req,res,next){
 	infoToLog.push({});
 	var item = "";
-	//removeItem(item)
+	var sqlCommand = "DELETE FROM collection WHERE Field1="+itemId;
+	dbExec(sqlCommand);
 	res.status(200).send('ok');
 });
 */
@@ -126,26 +132,12 @@ app.head('/', function (req,res,next){
 	next();
 });
 
-//data will be a string in json format
-function updateCollection(data){
-	//do INSERT into database, get column values from data param
-}
-
-//will be the ID of the item that you want to remove
-function removeItem(itemId){
-	//Delete item from server
-	//Delete item from database
-	var obj = JSON.parse(fs.readFileSync('fileList.json'));
-	items = obj.collection.items;
-
-	for(i=0;i<items.length;i++){
-		if(items[i].fileid == itemId){
-			delete obj.items[i];
+function dbExec(query){
+	database.exec(query, function(err){
+		if(err){
+			console.log(err);
+			throw err;
 		}
-	};
-
-	fs.writeFile('fileList.json',JSON.stringify(obj,null, "    "),function(err){
-		if (err) throw err;
 	});
 }
 
