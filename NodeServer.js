@@ -1,27 +1,19 @@
 var fs = require('fs');
 var express = require('express');
-var sql = require('mssql'); 
+var sql = require('sqlite3');
 var app = express();
 //var busboy = require('connect-busboy');
 var random = require('node-random');
+var database = connectToDB();
 
 var currLogFile = 'logFile.json';
 var infoToLog = [];
 
 function connectToDB(){
-	var config = {
-	    user: 'jaseew93/John Seewer',
-	    password: '0047JaS1193',
-	    server: '127.0.0.1',
-	    database: 'fileCollection'
-	};
-
-	var connection = new sql.Connection(config, function(err) {
-		console.log(err);
-		if (err) throw err;
+	var db = new sql.Database('fileCollection',function(err){
+		console.log("Database error: ", err);
 	});
-
-	return connection;
+	return db;
 }
 
 function generateJSONTemplate(){
@@ -44,9 +36,19 @@ function generateJSON(data){
         "href" : "",\
         "links" : [],\
         "items" : [';
+    //console.log("\n\n\n")
+    //console.log(data);
+    //console.log("\n\n\n");
 
-	data.forEach(function(record){
-		console.log(recordset[0]);
+	data.forEach(function(e) {
+		json += "{";
+		Object.keys(e).forEach(function(key) {
+			var value = e[key];
+			json += "\"" + key + ":" + value + "\"";
+			//console.log(key);
+			//console.log(value);
+		});
+		json += "}";
 	});
 
 	json += "]," + generateJSONTemplate() + "}}";
@@ -72,17 +74,12 @@ app.get('/', function (req, res, next) {
 		infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
 		res.setHeader('Content-Type', 'application/vnd.collection+json');
 
-		var connection = connectToDB();
-		var request = connection.request();
-		request.query('select *', function(err, recordset) {
-			console.log(err);
-        	if (err) throw err;
-        	else{
-        		var data = generateJSON(recordset);
-				res.status(200).send(data);
-			}
+		database.all("SELECT * FROM collection", function(err, row){
+			var data = generateJSON(row);
+			console.log(data);
+			res.status(200).send(data);
 		});
-		connection.close();
+        
   	}else{
   		next();
   	}
@@ -97,14 +94,14 @@ app.get('/:fileid', function (req, res, next) {
 	var fileid = req.params.fileid;
 	var obj = JSON.parse(fs.readFileSync('fileList.json'));
 
-	//findfile(filename);
+	//Connect to database and query for file with id: fileid
 
   	res.status(200).send('ok');
   	next();
 });
 
 app.post('/file-upload', function (req,res){
-	console.log(req);
+	console.log(req.params);
 
 	infoToLog.push({});
 	var file = req.body;
@@ -131,14 +128,7 @@ app.head('/', function (req,res,next){
 
 //data will be a string in json format
 function updateCollection(data){
-	var json = JSON.stringify(data, null, "    ");
-	var obj = JSON.parse(fs.readFileSync('fileList.json'));
-
-	obj.collection.items.push(json);
-
-	fs.writeFile('fileList.json',JSON.stringify(obj,null, "    "),function(err){
-		if (err) throw err;
-	});
+	//do INSERT into database, get column values from data param
 }
 
 //will be the ID of the item that you want to remove
