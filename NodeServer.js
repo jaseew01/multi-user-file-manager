@@ -17,47 +17,51 @@ function connectToDB(){
 }
 
 function generateJSONTemplate(){
-	var template = '"template" : {\
-            "data" : [\
-                { "name" : "filename", "value" : "" },\
-                { "name" : "date", "value" : "" },\
-                { "name" : "filetype", "value" : "" },\
-                { "name" : "size", "value" : "" },\
-                { "name" : "link", "value" : "" }\
-            ]\
-        }';
+	var template ={};
+	template.data = [];
+	var temp = ["filename","fileid","date","filetype","size","filedata"];
+	temp.forEach(function(item){
+		template.data.push({ "name" : item, "value" : " " });
+	});
+
     return template;
 }
 
 function generateJSON(data){
-	var json = '{ "collection" :\
-    {\
-        "version" : "1.0",\
-        "href" : "",\
-        "links" : [],\
-        "items" : [';
-    //console.log("\n\n\n")
-    //console.log(data);
-    //console.log("\n\n\n");
+	var json = {};
+	json.collection = {};
+	json.collection.version = "1.0";
+	json.collection.href = "";
+	json.collection.links = [];
+	json.collection.items = [];
 
 	data.forEach(function(e) {
-		json += "{";
 		Object.keys(e).forEach(function(key) {
 			var value = e[key];
-			json += "\"" + key + ":" + value + "\"";
-			//console.log(key);
+			json.collection.items.push({key:value});
 			//console.log(value);
 		});
-		json += "}";
 	});
 
-	json += "]," + generateJSONTemplate() + "}}";
+	json.collection.template = generateJSONTemplate()
 	return JSON.stringify(json, null, "    ");
 }
 
 app.get('/index.html', function (req, res, next){
 	res.setHeader('Content-Type', 'text/html');
 	fs.readFile('testPostAttach.html', function (err, data){
+		if (err){
+			res.status(404);
+		}else{
+			res.status(200);
+			res.send(data);
+		}
+	});
+});
+
+app.get('/delete.html',function (req, res, next){
+	res.setHeader('Content-Type', 'text/html');
+	fs.readFile('delete.html', function (err, data){
 		if (err){
 			res.status(404);
 		}else{
@@ -89,19 +93,28 @@ app.get('/', function (req, res, next) {
 //req.params.fileid -> will get id value from url
 //fileid is a variable placeholder for whatever value gets put into the url
 //Use regex here?
-app.get('/:fileid', function (req, res, next) {
+//**file/:fileid**
+app.get('/file/:fileid', function (req, res, next) {
 	infoToLog.push({});
 	var fileid = req.params.fileid;
-	res.setHeader('Content-Type','application/json');
+	//Ensure that fileid is just a number
+	if(fileid != /\d+$/){
+		var sqlCommand = "SELECT * FROM collection WHERE Field1="+fileid.slice(1);
+		res.setHeader('Content-Type','application/json');
 
-	database.get("SELECT * FROM collection WHERE Field1="+fileid,function(err, row){
-		if(err) throw err;
-		var data = row;
-		console.log(data);
-  		res.status(200).send(data);
-	});
-
-  	next();
+		database.get(sqlCommand, function(err, row){
+			if(err) throw err;
+			console.log(sqlCommand);
+			var data = row;
+			console.log("row data");
+			console.log(data);
+	  		res.status(200).send(data);
+		});
+	}
+	else{
+		//Bad Request
+		res.status(400).send("Enter number for File ID");
+	}
 });
 
 app.post('/file-upload', function (req,res){
@@ -116,15 +129,15 @@ app.post('/file-upload', function (req,res){
 	res.status(200).send('ok');
 });
 
-/*
-app.delete('/', function (req,res,next){
+//make form to hit app.delete();
+app.post('/file/delete', function (req,res,next){
 	infoToLog.push({});
 	var item = "";
-	var sqlCommand = "DELETE FROM collection WHERE Field1="+itemId;
+	var fileid = req.get("fileToDelete");
+	var sqlCommand = "DELETE FROM collection WHERE fileid="+filei;
 	dbExec(sqlCommand);
 	res.status(200).send('ok');
 });
-*/
 
 app.head('/', function (req,res,next){
 	infoToLog.push({});
