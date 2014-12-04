@@ -2,7 +2,7 @@ var fs = require('fs');
 var express = require('express');
 var sql = require('sqlite3');
 var app = express();
-//var busboy = require('connect-busboy');
+var Busboy = require('busboy');
 var random = require('node-random');
 var database = connectToDB();
 
@@ -33,8 +33,9 @@ function generateJSON(data){
 	json.collection.version = "1.0";
 	json.collection.href = "";
 	json.collection.links = [];
-	json.collection.items = [];
+	json.collection.items = data;
 
+	/*
 	data.forEach(function(e) {
 		Object.keys(e).forEach(function(key) {
 			var value = e[key];
@@ -42,7 +43,7 @@ function generateJSON(data){
 			//console.log(value);
 		});
 	});
-
+	*/
 	json.collection.template = generateJSONTemplate()
 	return JSON.stringify(json, null, "    ");
 }
@@ -98,7 +99,7 @@ app.get('/file/:fileid', function (req, res, next) {
 	infoToLog.push({});
 	var fileid = req.params.fileid;
 	//Ensure that fileid is just a number
-	if(fileid != /\d+$/){
+	if(/\d+$/.test(fileid)){
 		var sqlCommand = "SELECT * FROM collection WHERE Field1="+fileid.slice(1);
 		res.setHeader('Content-Type','application/json');
 
@@ -118,23 +119,38 @@ app.get('/file/:fileid', function (req, res, next) {
 });
 
 app.post('/file-upload', function (req,res){
-	console.log(req.params);
 	infoToLog.push({});
 
-	var file = req.body;
+	var sqlCommand = "INSERT INTO collection (filename,fileid,date,filetype,size,filedata)";
+	sqlCommand += "VALUES ('";//'file','3','121314','txt','472','aiovnweoivnx')";
 
-	var sqlCommand = "INSERT INTO collection (Field1) Values (22)";
-	dbExec(sqlCommand);
+	var busboy = new Busboy({ headers: req.headers });
+    busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+		console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
+		seperate = filename.split(".");
+		var fileid = 5;
+		var date = '11/12/14';
+		sqlCommand += seperate[0] + "','" + fileid + "','" + date + "','" + seperate[1] + "','";
+		file.on('data', function(data) {
+			console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+			sqlCommand += data.length + "','" + data + "')";
+		});
+	});
+	busboy.on('finish', function() {
+		console.log('Done parsing form!');
+		dbExec(sqlCommand);
+	});
+	req.pipe(busboy);
 
 	res.status(200).send('ok');
 });
 
 //make form to hit app.delete();
-app.post('/file/delete', function (req,res,next){
+app.post('/file/:fileid/delete', function (req,res,next){
 	infoToLog.push({});
 	var item = "";
 	var fileid = req.get("fileToDelete");
-	var sqlCommand = "DELETE FROM collection WHERE fileid="+filei;
+	var sqlCommand = "DELETE FROM collection WHERE fileid="+fileid;
 	dbExec(sqlCommand);
 	res.status(200).send('ok');
 });
