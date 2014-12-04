@@ -3,7 +3,7 @@ var express = require('express');
 var sql = require('sqlite3');
 var app = express();
 var Busboy = require('busboy');
-var random = require('node-random');
+var random = require('random-js');
 var database = connectToDB();
 
 var currLogFile = 'logFile.json';
@@ -35,15 +35,6 @@ function generateJSON(data){
 	json.collection.links = [];
 	json.collection.items = data;
 
-	/*
-	data.forEach(function(e) {
-		Object.keys(e).forEach(function(key) {
-			var value = e[key];
-			json.collection.items.push({key:value});
-			//console.log(value);
-		});
-	});
-	*/
 	json.collection.template = generateJSONTemplate()
 	return JSON.stringify(json, null, "    ");
 }
@@ -100,7 +91,7 @@ app.get('/file/:fileid', function (req, res, next) {
 	var fileid = req.params.fileid;
 	//Ensure that fileid is just a number
 	if(/\d+$/.test(fileid)){
-		var sqlCommand = "SELECT * FROM collection WHERE Field1="+fileid.slice(1);
+		var sqlCommand = "SELECT * FROM collection WHERE fileid="+fileid.slice(1);
 		res.setHeader('Content-Type','application/json');
 
 		database.get(sqlCommand, function(err, row){
@@ -121,19 +112,19 @@ app.get('/file/:fileid', function (req, res, next) {
 app.post('/file-upload', function (req,res){
 	infoToLog.push({});
 
-	var sqlCommand = "INSERT INTO collection (filename,fileid,date,filetype,size,filedata)";
+	var sqlCommand = "INSERT INTO collection (filename,fileid,date,filetype,size,filedata,link)";
 	sqlCommand += "VALUES ('";//'file','3','121314','txt','472','aiovnweoivnx')";
 
 	var busboy = new Busboy({ headers: req.headers });
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 		console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
 		seperate = filename.split(".");
-		var fileid = 5;
+		var fileid = randomNum();
 		var date = '11/12/14';
 		sqlCommand += seperate[0] + "','" + fileid + "','" + date + "','" + seperate[1] + "','";
 		file.on('data', function(data) {
 			console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
-			sqlCommand += data.length + "','" + data + "')";
+			sqlCommand += data.length + "','" + data + "','" + "/file/:"+fileid + "')";
 		});
 	});
 	busboy.on('finish', function() {
@@ -185,21 +176,25 @@ function writeToLogFile(){
 	}
 }
 
-//will append a unique 4-digit id to the end of the file name
-//function generates a random integer and then checks that it doesn't already exist
-//returns new filename
-function nameFile(filename){
-	random.numbers({
-		"number": 1,
-		"minimum": 1000,
-		"maximum": 9999
-	}, function(error, data){
-		if (error) throw error;
-		//if randNum exists: 
-		//return filename+nameFile(filename);
-		//else{...}
-		return filename+data[0].toString();
-	});
+function randomNum(){
+	var randInt = random.integer(1,100000);
+	console.log("here");
+	console.log(randInt);
+
+	return 10;
+	//database.all("SELECT * FROM collection WHERE fileid="+randInt, function(err, row){
+	//	if(err) throw err;
+
+	//	console.log("\n\nhere\n\n");
+	//	console.log(row);
+
+	//	if(row.length > 0){
+	//		return randomNum();
+	//	}
+	//	else{
+	//		return randInt;
+	//	}
+	//});
 }
 
 app.listen('8080');
