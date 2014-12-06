@@ -141,7 +141,7 @@ app.get('/file/:fileid/download', function (req, res, next){
 			else {
 				console.log("Sent: ", filename);
 			}
-		}
+		});
 	});
 });
 
