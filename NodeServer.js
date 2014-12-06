@@ -4,6 +4,7 @@ var sql = require('sqlite3');
 var app = express();
 var Busboy = require('busboy');
 var random = require('random-js');
+var handlebars = require('./handlebars-v2.0.0(1)');
 var database = connectToDB();
 
 var currLogFile = 'logFile.json';
@@ -39,21 +40,24 @@ function generateJSON(data){
 	return JSON.stringify(json, null, "    ");
 }
 
-app.get('/index.html', function (req, res, next){
+function generateFileHTML(fileid){
+	var source = "<!DOCTYPE html><html><head><title>File: {{fileid}}</title></head><body>";
+	source += "<a href =\"/file/{{fileid}}/download\">Download File</a><br /><br />";
+	source += "<form method=\"post\" action=\"/file/{{fileid}}/delete\" enctype=\"multipart/form-data\">";
+	source += "<input type=\"submit\" value=\"Delete\"></form>"
+	source += "</body></html>";
+
+	var template = handlebars.compile(source);
+
+	var data = { "fileid" : fileid };
+	var html = template(data);
+
+	return html;
+}
+
+app.get('/index', function (req, res, next){
 	res.setHeader('Content-Type', 'text/html');
 	fs.readFile('testPostAttach.html', function (err, data){
-		if (err){
-			res.status(404);
-		}else{
-			res.status(200);
-			res.send(data);
-		}
-	});
-});
-
-app.get('/delete.html',function (req, res, next){
-	res.setHeader('Content-Type', 'text/html');
-	fs.readFile('delete.html', function (err, data){
 		if (err){
 			res.status(404);
 		}else{
@@ -81,17 +85,21 @@ app.get('/', function (req, res, next) {
   	}
 });
 
-//'/:fileid'
-//req.params.fileid -> will get id value from url
-//fileid is a variable placeholder for whatever value gets put into the url
-//Use regex here?
-//**file/:fileid**
-app.get('/file/:fileid', function (req, res, next) {
+app.get('/file/:fileid/html',function (req, res, next){
+	var fileid = req.params.fileid;
+	var html = generateFileHTML(fileid);
+
+	res.setHeader('Content-Type','text/html');
+	res.status(400).send(html);
+});
+
+//Will return the JSON document of the file requested
+app.get('/file/:fileid/json', function (req, res, next){
 	infoToLog.push({});
 	var fileid = req.params.fileid;
 	//Ensure that fileid is just a number
 	if(/\d+$/.test(fileid)){
-		var sqlCommand = "SELECT * FROM collection WHERE fileid="+fileid.slice(1);
+		var sqlCommand = "SELECT * FROM collection WHERE fileid="+fileid;
 		res.setHeader('Content-Type','application/json');
 
 		database.get(sqlCommand, function(err, row){
@@ -109,6 +117,34 @@ app.get('/file/:fileid', function (req, res, next) {
 	}
 });
 
+app.get('/file/:fileid/download', function (req, res, next){
+	var fileid = req.params.fileid;
+	var options = {
+		root: '',
+		dotfiles: 'deny',
+		headers:{
+			'x-timestamp': Date.now(),
+			'x-sent': true
+		}
+	};
+	var sqlCommand = "SELECT * FROM collection WHERE fileid="+fileid;
+
+	database.get(sqlCommand, function(err, row){
+		var filename = row["filename"];
+		var data = row["filedata"];
+
+		res.sendFile(filename, options, function (err) {
+			if (err) {
+				console.log(err);
+				res.status(err.status).end();
+			}
+			else {
+				console.log("Sent: ", filename);
+			}
+		}
+	});
+});
+
 app.post('/file-upload', function (req,res){
 	infoToLog.push({});
 
@@ -124,7 +160,7 @@ app.post('/file-upload', function (req,res){
 		sqlCommand += seperate[0] + "','" + fileid + "','" + date + "','" + seperate[1] + "','";
 		file.on('data', function(data) {
 			console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
-			sqlCommand += data.length + "','" + data + "','" + "/file/:"+fileid + "')";
+			sqlCommand += data.length + "','" + data + "','" + "/file/"+fileid + "')";
 		});
 	});
 	busboy.on('finish', function() {
@@ -140,7 +176,7 @@ app.post('/file-upload', function (req,res){
 app.post('/file/:fileid/delete', function (req,res,next){
 	infoToLog.push({});
 	var item = "";
-	var fileid = req.get("fileToDelete");
+	var fileid = req.params.fileid
 	var sqlCommand = "DELETE FROM collection WHERE fileid="+fileid;
 	dbExec(sqlCommand);
 	res.status(200).send('ok');
@@ -176,6 +212,7 @@ function writeToLogFile(){
 	}
 }
 
+//GUID not random-js <-----
 function randomNum(){
 	var randInt = random.integer(1,100000);
 	console.log("here");
