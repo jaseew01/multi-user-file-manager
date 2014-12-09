@@ -5,6 +5,7 @@ var app = express();
 var Busboy = require('busboy');
 var random = require('random-js');
 var handlebars = require('./handlebars-v2.0.0(1)');
+var mime = require('mime');
 var database = connectToDB();
 
 var currLogFile = 'logFile.json';
@@ -132,16 +133,10 @@ app.get('/file/:fileid/download', function (req, res, next){
 	database.get(sqlCommand, function(err, row){
 		var filename = row["filename"];
 		var data = row["filedata"];
+		var filetype = row["filetype"];
 
-		res.sendFile(filename, options, function (err) {
-			if (err) {
-				console.log(err);
-				res.status(err.status).end();
-			}
-			else {
-				console.log("Sent: ", filename);
-			}
-		});
+		res.setHeader('Content-Type',mime.lookup(filetype));
+		res.status('200').send(data);
 	});
 });
 
@@ -149,7 +144,7 @@ app.post('/file-upload', function (req,res){
 	infoToLog.push({});
 
 	var sqlCommand = "INSERT INTO collection (filename,fileid,date,filetype,size,filedata,link)";
-	sqlCommand += "VALUES ('";//'file','3','121314','txt','472','aiovnweoivnx')";
+	sqlCommand += "VALUES ('";
 
 	var busboy = new Busboy({ headers: req.headers });
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
