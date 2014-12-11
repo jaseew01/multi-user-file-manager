@@ -21,12 +21,18 @@ logFile.json
 
 GET
 * /
-* /file/:fileid/html
-* /file/:fileid/json
-* /file/:fileid/download
+* /file/fileid/html
+* /file/fileid/json
+* /file/fileid/download
 
 POST
 * /file-upload
-* /file/:fileid/delete
+* /file/fileid/delete
 
 HEAD
+=======================
+**Response Outlines**
+
+* '/': initialGET.txt
+* '/file/fileid/html': filePage.txt
+* '/file/fileid/json': singleFile.txt

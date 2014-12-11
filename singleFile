@@ -1,0 +1,9 @@
+{
+	filename: 'value',
+	fileid: 'value',
+	date: '**/**/****',
+	filetype: 'value',
+	size: 000,
+	filedata: 'value',
+	link: '/file/fileid'
+}

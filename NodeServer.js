@@ -89,14 +89,14 @@ app.get('/file/:fileid/json', function (req, res, next){
 	infoToLog.push({});
 	var fileid = req.params.fileid;
 	//Ensure that fileid is just a number
-	if(/\d+$/.test(fileid)){
-		var sqlCommand = "SELECT * FROM collection WHERE fileid="+fileid;
+	if(true){///\d+$/.test(fileid)){
+		var sqlCommand = "SELECT * FROM collection WHERE fileid='"+fileid+"'";
 		res.setHeader('Content-Type','application/json');
 
 		database.get(sqlCommand, function(err, row){
 			if(err) throw err;
 
-			if(row.length() === 0){
+			if(row === "undefined"){
 				//file not found
 				res.status(404).send('file not found');
 			}else{

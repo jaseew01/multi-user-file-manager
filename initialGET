@@ -1,0 +1,42 @@
+{ "collection" :
+    {
+        "version" : "1.0",
+        "href" : "",
+        "links" : [],
+
+        "items" : [
+            {
+                "href" : " ",
+                "data" : [
+                    { "name" : "filename", "value" : "file1" },
+                    { "name" : "fileid", "value", : "12345" },
+                    { "name" : "date", "value" : "September 9, 2014" },
+                    { "name" : "filetype", "value" : "jpeg" },
+                    { "name" : "size", "value" : "12 MB" },
+                    { "name" : "link", "value" : " " }
+                ]
+    		},
+            {
+                "href" : " ",
+                "data" : [
+                    { "name" : "filename", "value" : "file2" },
+                    { "name" : "fileid", "value", : "12345" },
+                    { "name" : "date", "value" : "September 8, 2014" },
+                    { "name" : "filetype", "value" : "txt" },
+                    { "name" : "size", "value" : "10 KB" },
+                    { "name" : "link", "value" : " " }
+                ]
+            }
+        ],
+
+        "template" : {
+            "data" : [
+                { "name" : "filename", "value" : "" },
+                { "name" : "date", "value" : "" },
+                { "name" : "filetype", "value" : "" },
+                { "name" : "size", "value" : "" },
+                { "name" : "link", "value" : "" }
+            ]
+        }
+    }
+}
