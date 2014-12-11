@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>File: {{fileid}}</title>
+</head>
+<body>
+<a href ="/file/{{fileid}}/download">Download File</a>
+<br />
+<br />
+<form method="post" action="/file/{{fileid}}/delete" enctype="multipart/form-data">
+<input type="submit" value="Delete"></form>
+</body>
+</html>

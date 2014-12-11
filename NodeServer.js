@@ -42,21 +42,6 @@ function generateJSON(data){
 	return JSON.stringify(json, null, "    ");
 }
 
-function generateFileHTML(fileid){
-	var source = "<!DOCTYPE html><html><head><title>File: {{fileid}}</title></head><body>";
-	source += "<a href =\"/file/{{fileid}}/download\">Download File</a><br /><br />";
-	source += "<form method=\"post\" action=\"/file/{{fileid}}/delete\" enctype=\"multipart/form-data\">";
-	source += "<input type=\"submit\" value=\"Delete\"></form>"
-	source += "</body></html>";
-
-	var template = handlebars.compile(source);
-
-	var data = { "fileid" : fileid };
-	var html = template(data);
-
-	return html;
-}
-
 app.get('/index', function (req, res, next){
 	res.setHeader('Content-Type', 'text/html');
 	fs.readFile('testPostAttach.html', function (err, data){
@@ -86,10 +71,17 @@ app.get('/', function (req, res, next) {
 
 app.get('/file/:fileid/html',function (req, res, next){
 	var fileid = req.params.fileid;
-	var html = generateFileHTML(fileid);
 
-	res.setHeader('Content-Type','text/html');
-	res.status(400).send(html);
+	fs.readFile('filepage.txt', function (err, data){
+		if (err) throw err;
+
+		var template = handlebars.compile(data.toString());
+		var values = { "fileid" : fileid };
+		var html = template(values);
+
+		res.setHeader('Content-Type','text/html');
+		res.status(200).send(html);
+	});
 });
 
 //Will return the JSON document of the file requested
