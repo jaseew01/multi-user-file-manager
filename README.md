@@ -31,5 +31,3 @@ POST
 * /file/:fileid/delete
 
 HEAD
-
-DELETE

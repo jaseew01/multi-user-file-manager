@@ -6,6 +6,7 @@ var Busboy = require('busboy');
 var random = require('random-js');
 var handlebars = require('./handlebars-v2.0.0(1)');
 var mime = require('mime');
+var uuid = require('node-uuid');
 var database = connectToDB();
 
 var currLogFile = 'logFile.json';
@@ -80,10 +81,7 @@ app.get('/', function (req, res, next) {
 			console.log(data);
 			res.status(200).send(data);
 		});
-        
-  	}else{
-  		next();
-  	}
+    }
 });
 
 app.get('/file/:fileid/html',function (req, res, next){
@@ -105,11 +103,17 @@ app.get('/file/:fileid/json', function (req, res, next){
 
 		database.get(sqlCommand, function(err, row){
 			if(err) throw err;
-			console.log(sqlCommand);
-			var data = row;
-			console.log("row data");
-			console.log(data);
-	  		res.status(200).send(data);
+
+			if(row.length() === 0){
+				//file not found
+				res.status(404).send('file not found');
+			}else{
+				console.log(sqlCommand);
+				var data = row;
+				console.log("row data");
+				console.log(data);
+		  		res.status(200).send(data);
+	  		}
 		});
 	}
 	else{
@@ -151,7 +155,8 @@ app.post('/file-upload', function (req,res){
 		console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
 		seperate = filename.split(".");
 		var fileid = randomNum();
-		var date = '11/12/14';
+		var dateObject = new Date();
+		date = (dateObject.getMonth()+1).toString() + "/" + dateObject.getDate().toString() + "/" + dateObject.getFullYear().toString();
 		sqlCommand += seperate[0] + "','" + fileid + "','" + date + "','" + seperate[1] + "','";
 		file.on('data', function(data) {
 			console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
@@ -160,11 +165,13 @@ app.post('/file-upload', function (req,res){
 	});
 	busboy.on('finish', function() {
 		console.log('Done parsing form!');
-		dbExec(sqlCommand);
+		if(dbExec(sqlCommand) === false){
+			res.status(501).send('not implemented');
+		}else{
+			res.status(201).send('created');
+		}
 	});
 	req.pipe(busboy);
-
-	res.status(200).send('ok');
 });
 
 //make form to hit app.delete();
@@ -173,8 +180,11 @@ app.post('/file/:fileid/delete', function (req,res,next){
 	var item = "";
 	var fileid = req.params.fileid
 	var sqlCommand = "DELETE FROM collection WHERE fileid="+fileid;
-	dbExec(sqlCommand);
-	res.status(200).send('ok');
+	if(dbExec(sqlCommand) === false){
+		res.status(501).send('not implemented');
+	}else{
+		res.status(200).send('ok');
+	}
 });
 
 app.head('/', function (req,res,next){
@@ -187,7 +197,10 @@ function dbExec(query){
 	database.exec(query, function(err){
 		if(err){
 			console.log(err);
-			throw err;
+			//throw err;
+			return false;
+		}else{
+			return true;
 		}
 	});
 }
@@ -209,24 +222,19 @@ function writeToLogFile(){
 
 //GUID not random-js <-----
 function randomNum(){
-	var randInt = random.integer(1,100000);
-	console.log("here");
-	console.log(randInt);
+	var randInt = uuid.v4();
 
-	return 10;
-	//database.all("SELECT * FROM collection WHERE fileid="+randInt, function(err, row){
-	//	if(err) throw err;
+	return randInt;
+	database.all("SELECT * FROM collection WHERE fileid="+randInt, function(err, row){
+		if(err) throw err;
 
-	//	console.log("\n\nhere\n\n");
-	//	console.log(row);
-
-	//	if(row.length > 0){
-	//		return randomNum();
-	//	}
-	//	else{
-	//		return randInt;
-	//	}
-	//});
+		if(row.length > 0){
+			return randomNum();
+		}
+		else{
+			return randInt;
+		}
+	});
 }
 
 app.listen('8080');
