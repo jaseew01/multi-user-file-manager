@@ -181,8 +181,10 @@ app.post('/file/:fileid/delete', function (req,res,next){
 
 app.head('/', function (req,res,next){
 	infoToLog.push({});
+	res.setHeader('Content-Type','text/html; charset=UTF-8');
+	res.setHeader('Date',new Date());
+	res.setHeader('Connection','close');
 	res.status(200).send('ok');
-	next();
 });
 
 function dbExec(query){

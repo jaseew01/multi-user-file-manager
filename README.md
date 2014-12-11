@@ -21,7 +21,6 @@ logFile.json
 
 GET
 * /
-* /index
 * /file/:fileid/html
 * /file/:fileid/json
 * /file/:fileid/download
