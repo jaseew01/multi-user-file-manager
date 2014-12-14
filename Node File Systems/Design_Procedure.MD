@@ -90,13 +90,13 @@ Profile
 **What an individual file will look like (GET response content for individual file)**
 ```
 {
-    name:
-    {
-        date:"November 1, 2014",
-        type:"png",
-        size:"7 MB",
-        link:""
-    }
+    filename: 'value',
+    fileid: 'value',
+    date: '**/**/****',
+    filetype: 'value',
+    size: 000,
+    filedata: 'value',
+    link: '/file/fileid'
 }
 ```
 
@@ -134,9 +134,6 @@ DELETE
         * 202(Accepted)
         * 204(No Content)
         * 501(Not Implemented)
-
-
-
 
 **read more into http request types**
 * RESTful_Web_Services.pdf

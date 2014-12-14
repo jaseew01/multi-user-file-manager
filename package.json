@@ -3,8 +3,10 @@
   "version":"1.0.0",
   "dependencies":{
   	"express":"*",
-  	"mssql":"*",
-  	"node-random":"*",
-  	"fs":"*"
+  	"sqlite3":"*",
+  	"fs":"*",
+  	"node-uuid":"*",
+  	"mime":"*",
+  	"busboy":"*"
   }
 }

@@ -3,7 +3,6 @@ var express = require('express');
 var sql = require('sqlite3');
 var app = express();
 var Busboy = require('busboy');
-var random = require('random-js');
 var handlebars = require('./handlebars-v2.0.0(1)');
 var mime = require('mime');
 var uuid = require('node-uuid');
@@ -11,6 +10,8 @@ var database = connectToDB();
 
 var currLogFile = 'logFile.json';
 var infoToLog = [];
+
+app.use(express.static('downloads'));
 
 function connectToDB(){
 	var db = new sql.Database('fileCollection',function(err){
@@ -116,23 +117,20 @@ app.get('/file/:fileid/json', function (req, res, next){
 
 app.get('/file/:fileid/download', function (req, res, next){
 	var fileid = req.params.fileid;
-	var options = {
-		root: '',
-		dotfiles: 'deny',
-		headers:{
-			'x-timestamp': Date.now(),
-			'x-sent': true
-		}
-	};
-	var sqlCommand = "SELECT * FROM collection WHERE fileid="+fileid;
+	var sqlCommand = "SELECT * FROM collection WHERE fileid='"+fileid+"'";
 
 	database.get(sqlCommand, function(err, row){
+		if (err) throw err;
+
 		var filename = row["filename"];
 		var data = row["filedata"];
-		var filetype = row["filetype"];
+		filename += "." + row["filetype"];
 
-		res.setHeader('Content-Type',mime.lookup(filetype));
-		res.status('200').send(data);
+		fs.writeFile("downloads/"+filename, data, function (err) {
+  			if (err) throw err;
+  			fs.appendFile("downloads/"+filename,data);
+			res.redirect(/*http respnse code,*/'/file/downloads/'+filename);
+		});
 	});
 });
 
