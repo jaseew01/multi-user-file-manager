@@ -167,7 +167,7 @@ app.post('/file-upload', function (req,res){
 		sqlCommand += seperate[0] + "','" + fileid + "','" + date + "','" + seperate[1] + "','";
 		file.on('data', function(data) {
 			console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
-			sqlCommand += data.length + "','" + data + "','" + "/file/"+fileid + "')";
+			sqlCommand += data.length + "','" + data + "','" + "/file/"+fileid+"/json" + "')";
 		});
 	});
 	busboy.on('finish', function() {
