@@ -11,13 +11,30 @@ var database = connectToDB();
 var currLogFile = 'logFile.json';
 var infoToLog = [];
 
-app.use(express.static('downloads'));
+app.use(express.static(__dirname + '/downloads'));
 
 function connectToDB(){
-	var db = new sql.Database('fileCollection',function(err){
-		console.log("Database error: ", err);
+	fs.exists('fileCollection',function(exists){
+		if(exists){
+			var db = new sql.Database('fileCollection',function(err){
+				console.log("Database error: ", err);
+			});
+			return db;
+		}else{
+			var db = new sql.Database('fileCollection',function(err){
+				console.log("Database error: ", err);
+			});
+			var query = "CREATE DATABASE fileCollection;";
+			query += "CREATE TABLE 'collection'";
+			query += "(`filename`	TEXT,`fileid`	TEXT NOT NULL,`date`	INTEGER,`filetype`	TEXT,`size`	INTEGER,`filedata`	BLOB,`link`	TEXT);"
+			
+			db.run(query,function(err){
+				console.log(err);
+			});
+			
+			return db;
+		}
 	});
-	return db;
 }
 
 function generateJSONTemplate(){
@@ -128,8 +145,8 @@ app.get('/file/:fileid/download', function (req, res, next){
 
 		fs.writeFile("downloads/"+filename, data, function (err) {
   			if (err) throw err;
-  			fs.appendFile("downloads/"+filename,data);
-			res.redirect(/*http respnse code,*/'/file/downloads/'+filename);
+
+			res.redirect("/downloads/"+filename);
 		});
 	});
 });
