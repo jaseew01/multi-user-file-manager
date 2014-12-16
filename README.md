@@ -25,26 +25,33 @@ logFile.json
 
 GET
 * /
+	* The initial GET request, sends back a collection+JSON list of all the files
 * /file/fileid/html
+	* sends back an html page with two links, one to download the file and the
+	other to delete it.
 * /file/fileid/json
+	* sends back a json document with information fields on the file
 * /file/fileid/download
+	* will create the file on the hard drive and redirect the browser to its location for download
 
 POST
-* /file-upload
+* /file
 	* Is expecting a form with some attached file in the HTTP POST
 * /file/fileid/delete
+	* will remove the file from the database
 
 HEAD
 * /
+	*sends back a simple HTTP response with no content
 
 =======================
 **Response Outlines**
 
 -These are example responses for a GET request to the specified url-
 
-* '/': initialGET.txt
-* '/file/fileid/html': filePage.txt
-* '/file/fileid/json': singleFile.txt
+* '/': [/initialGET.txt]
+* '/file/fileid/html': [/filePage.txt]
+* '/file/fileid/json': [/singleFile.txt]
 
 =======================
 **Database 'fileCollection'**
@@ -66,3 +73,18 @@ HEAD
 			* example entry: this is some text
 		* 'link': TEXT
 			* example entry: /file/02d5c910-36ea-431c-8ee8-b3eb1c6c22ad/json
+
+State Diagram
+============================
+```
+----------------                ----------------------
+|   **file**   |                |    **File List**   |
+|    (type)    |      Item      |       (names)      | <------------
+|    (size)    | <------------- |     (total size)   |
+|	 (date)    |                |       (number)     |
+|	 (name)    |                ----------------------
+----------------                           ^
+        |                                  |
+        ------------------------------------
+                    Collection
+```

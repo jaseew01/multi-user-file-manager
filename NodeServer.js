@@ -151,7 +151,7 @@ app.get('/file/:fileid/download', function (req, res, next){
 	});
 });
 
-app.post('/file-upload', function (req,res){
+app.post('/file', function (req,res){
 	infoToLog.push({});
 
 	var sqlCommand = "INSERT INTO collection (filename,fileid,date,filetype,size,filedata,link)";
