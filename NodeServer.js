@@ -6,7 +6,8 @@ var Busboy = require('busboy');
 var handlebars = require('./handlebars-v2.0.0(1)');
 var mime = require('mime');
 var uuid = require('node-uuid');
-var database = connectToDB();
+var database = undefined;
+connectToDB();
 
 var currLogFile = 'logFile.json';
 var infoToLog = [];
@@ -15,12 +16,15 @@ app.use(express.static(__dirname + '/downloads'));
 
 function connectToDB(){
 	fs.exists('fileCollection',function(exists){
+		console.log("\ninside fs.exists\n");
 		if(exists){
+			console.log("\nDatabase Exists!\n");
 			var db = new sql.Database('fileCollection',function(err){
 				console.log("Database error: ", err);
+				database = db;
 			});
-			return db;
 		}else{
+			console.log("\nDatabase Doesn't exist!!!\n");
 			var db = new sql.Database('fileCollection',function(err){
 				console.log("Database error: ", err);
 			});
@@ -28,11 +32,10 @@ function connectToDB(){
 			query += "CREATE TABLE 'collection'";
 			query += "(`filename`	TEXT,`fileid`	TEXT NOT NULL,`date`	INTEGER,`filetype`	TEXT,`size`	INTEGER,`filedata`	BLOB,`link`	TEXT);"
 			
-			db.run(query,function(err){
+			db.exec(query,function(err){
 				console.log(err);
+				database = db;
 			});
-			
-			return db;
 		}
 	});
 }
@@ -75,16 +78,22 @@ app.get('/index', function (req, res, next){
 //Will simply return the collection+JSON file
 //Return correct response
 app.get('/', function (req, res, next) {
-	if(req.originalUrl === '/'){
-		infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
-		res.setHeader('Content-Type', 'application/vnd.collection+json');
+	infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
 
-		database.all("SELECT * FROM collection", function(err, row){
-			var data = generateJSON(row);
-			console.log(data);
-			res.status(200).send(data);
-		});
-    }
+	if(database != undefined){
+		if(req.originalUrl === '/'){
+			infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
+			res.setHeader('Content-Type', 'application/vnd.collection+json');
+
+			database.all("SELECT * FROM collection", function(err, row){
+				var data = generateJSON(row);
+				console.log(data);
+				res.status(200).send(data);
+			});
+	    }
+	}else{
+		res.status(500).send("Couldn't connect to Database");
+	}
 });
 
 app.get('/file/:fileid/html',function (req, res, next){
@@ -107,7 +116,7 @@ app.get('/file/:fileid/json', function (req, res, next){
 	infoToLog.push({});
 	var fileid = req.params.fileid;
 	//Ensure that fileid is just a number
-	if(true){///\d+$/.test(fileid)){
+	if(/^[0-9a-z]{8}\D[0-9a-z]{4}\D[0-9a-z]{4}\D[0-9a-z]{4}\D[0-9a-z]{12}$/.test(fileid)){
 		var sqlCommand = "SELECT * FROM collection WHERE fileid='"+fileid+"'";
 		res.setHeader('Content-Type','application/json');
 
@@ -128,11 +137,13 @@ app.get('/file/:fileid/json', function (req, res, next){
 	}
 	else{
 		//Bad Request
-		res.status(400).send("Enter number for File ID");
+		res.status(400).send("Please enter valid file id");
 	}
 });
 
 app.get('/file/:fileid/download', function (req, res, next){
+	infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
+
 	var fileid = req.params.fileid;
 	var sqlCommand = "SELECT * FROM collection WHERE fileid='"+fileid+"'";
 
@@ -152,7 +163,7 @@ app.get('/file/:fileid/download', function (req, res, next){
 });
 
 app.post('/file', function (req,res){
-	infoToLog.push({});
+	infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
 
 	var sqlCommand = "INSERT INTO collection (filename,fileid,date,filetype,size,filedata,link)";
 	sqlCommand += "VALUES ('";
@@ -164,10 +175,10 @@ app.post('/file', function (req,res){
 		var fileid = randomNum();
 		var dateObject = new Date();
 		date = (dateObject.getMonth()+1).toString() + "/" + dateObject.getDate().toString() + "/" + dateObject.getFullYear().toString();
-		sqlCommand += seperate[0] + "','" + fileid + "','" + date + "','" + seperate[1] + "','";
+		sqlCommand += seperate[0] + "','" + fileid + "','" + date + "','" + seperate[1] + "',";
 		file.on('data', function(data) {
 			console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
-			sqlCommand += data.length + "','" + data + "','" + "/file/"+fileid+"/json" + "')";
+			sqlCommand += data.length + ",'" + data + "','" + "/file/"+fileid+"/json" + "')";
 		});
 	});
 	busboy.on('finish', function() {
@@ -181,12 +192,11 @@ app.post('/file', function (req,res){
 	req.pipe(busboy);
 });
 
-//make form to hit app.delete();
 app.post('/file/:fileid/delete', function (req,res,next){
-	infoToLog.push({});
-	var item = "";
+	infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
+	
 	var fileid = req.params.fileid
-	var sqlCommand = "DELETE FROM collection WHERE fileid="+fileid;
+	var sqlCommand = "DELETE FROM collection WHERE fileid='"+fileid+"'";
 	if(dbExec(sqlCommand) === false){
 		res.status(501).send('not implemented');
 	}else{
@@ -195,7 +205,8 @@ app.post('/file/:fileid/delete', function (req,res,next){
 });
 
 app.head('/', function (req,res,next){
-	infoToLog.push({});
+	infoToLog.push({method : req.method, url : req.get('host')+req.originalUrl});
+
 	res.setHeader('Content-Type','text/html; charset=UTF-8');
 	res.setHeader('Date',new Date());
 	res.setHeader('Connection','close');
@@ -245,6 +256,8 @@ function randomNum(){
 		}
 	});
 }
+
+setInterval(writeToLogFile, 60000);
 
 app.listen('8080');
 console.log("listening to port 8080");
