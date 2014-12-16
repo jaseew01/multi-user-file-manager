@@ -16,7 +16,6 @@ app.use(express.static(__dirname + '/downloads'));
 
 function connectToDB(){
 	fs.exists('fileCollection',function(exists){
-		console.log("\ninside fs.exists\n");
 		if(exists){
 			console.log("\nDatabase Exists!\n");
 			var db = new sql.Database('fileCollection',function(err){
@@ -24,7 +23,7 @@ function connectToDB(){
 				database = db;
 			});
 		}else{
-			console.log("\nDatabase Doesn't exist!!!\n");
+			console.log("\nDatabase Didn't exist, but was created!\n");
 			var db = new sql.Database('fileCollection',function(err){
 				console.log("Database error: ", err);
 			});
@@ -62,18 +61,6 @@ function generateJSON(data){
 	json.collection.template = generateJSONTemplate()
 	return JSON.stringify(json, null, "    ");
 }
-
-app.get('/index', function (req, res, next){
-	res.setHeader('Content-Type', 'text/html');
-	fs.readFile('testPostAttach.html', function (err, data){
-		if (err){
-			res.status(404);
-		}else{
-			res.status(200);
-			res.send(data);
-		}
-	});
-});
 
 //Will simply return the collection+JSON file
 //Return correct response
@@ -148,16 +135,22 @@ app.get('/file/:fileid/download', function (req, res, next){
 	var sqlCommand = "SELECT * FROM collection WHERE fileid='"+fileid+"'";
 
 	database.get(sqlCommand, function(err, row){
-		if (err) throw err;
+		if (err){
+			res.status(500);
+			throw err;
+		}
 
 		var filename = row["filename"];
 		var data = row["filedata"];
 		filename += "." + row["filetype"];
 
 		fs.writeFile("downloads/"+filename, data, function (err) {
-  			if (err) throw err;
-
-			res.redirect("/downloads/"+filename);
+  			if (err){
+				res.status(500);
+				throw err;
+			}
+			res.sendFile(__dirname+"/downloads/"+filename);
+			//res.redirect("/downloads/"+filename);
 		});
 	});
 });
@@ -240,7 +233,22 @@ function writeToLogFile(){
 	}
 }
 
-//GUID not random-js <-----
+function removeOldFiles(){
+	fs.readdir('/downloads', function(err, files){
+			files.forEach(function(file){
+				fs.stat(file, function(err, stat){
+					if (err) throw err;
+					//if file has existed for more than 24 hours then delete it
+					if(new Date().getTime() - stat.ctime.getTime() > 86400000){
+						fs.unlink(file,function(err){
+							if (err) throw err;
+						});
+					}
+				});
+			});
+		});
+}
+
 function randomNum(){
 	var randInt = uuid.v4();
 
@@ -258,6 +266,8 @@ function randomNum(){
 }
 
 setInterval(writeToLogFile, 60000);
+//every 10 hours
+setInterval(removeOldFiles, 36000000);
 
 app.listen('8080');
 console.log("listening to port 8080");

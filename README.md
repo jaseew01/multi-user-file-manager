@@ -49,9 +49,9 @@ HEAD
 
 -These are example responses for a GET request to the specified url-
 
-* '/': [/initialGET.txt]
-* '/file/fileid/html': [/filePage.txt]
-* '/file/fileid/json': [/singleFile.txt]
+* '/': [initialGET.txt] (/initialGET.txt)
+* '/file/fileid/html': [filePage.txt] (/filePage.txt)
+* '/file/fileid/json': [singleFile.txt] (/singleFile.txt)
 
 =======================
 **Database 'fileCollection'**
